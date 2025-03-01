@@ -4,6 +4,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Usuarios_model extends CI_Model {
 	
+	/**
+     * Verifica se o usuário existe com base no id_usuario fornecido.
+     *
+     * @param int $id_usuario
+     * @return bool
+     */
+    public function usuarioExiste($id_usuario)
+    {
+        // Consulta para verificar a existência do usuário
+        $this->db->where('id_usuario', $id_usuario);
+        $query = $this->db->get('usuario');
+        
+        // Retorna TRUE se o usuário existe, caso contrário FALSE
+        return $query->num_rows() > 0;
+    }
+
 	/**********************************************************
 	 * Esta função chamada "login_user" é usada para autenticar
 	 * um usuário com base em seu email e senha no banco de dados.

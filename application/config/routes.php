@@ -52,3 +52,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+$route['loja'] = 'loja/index';  // Página principal da loja
+$route['loja/cadastrarProduto'] = 'loja/cadastrarProduto';  // Cadastrar produto
+$route['loja/editarProduto/(:num)'] = 'loja/editarProduto/$1';  // Editar produto
+$route['loja/deletarProduto/(:num)'] = 'loja/deletarProduto/$1';  // Deletar produto
+$route['loja/vendas'] = 'loja/vendas';  // Visualizar vendas
+$route['cadastrarProduto'] = 'loja/cadastrarProduto'; // Página do formulário
+$route['salvarProduto'] = 'loja/salvarProduto'; // Ação de salvar
+
+
