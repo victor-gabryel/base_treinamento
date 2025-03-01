@@ -6,112 +6,108 @@ class Loja extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        $this->load->library('template'); // Carrega a biblioteca de template
-        $this->load->model('Produtos_Price_model'); // Carrega o modelo de produtos
-        $this->load->model('Vendas_model'); // Carrega o modelo de vendas
-        $this->load->model('Usuarios_model'); // Carrega o modelo de usuários
+        $this->load->library('template'); 
+        $this->load->model('Produtos_Price_model'); 
+        $this->load->model('Vendas_model'); 
+        $this->load->model('Usuarios_model'); 
+
+        // Verifica se o usuário está logado
+        if (!$this->session->userdata('id_usuario')) {
+            redirect('login');
+        }
     }
 
-    // Página inicial da loja
     public function index(){
-        $produtos = $this->Produtos_Price_model->get_produtos(); // Pega todos os produtos
+        $produtos = $this->Produtos_Price_model->get_produtos(); 
         $dados = [
             'title' => 'Loja',
-            'produtos' => $produtos // Passa os produtos para a view
+            'produtos' => $produtos
         ];
-        $this->template->load('lojaPaginaPrincipal', $dados); // Chama a view lojaPaginaPrincipal com os produtos
+        $this->template->load('lojaPaginaPrincipal', $dados);
     }
 
-    // Função para exibir o formulário de cadastro de produto
     public function cadastrarProduto() {
-        $this->load->view('cadastrarProduto'); // Chama a view cadastrarProduto.php
+        $this->load->view('cadastrarProduto');
     }
 
-    // Função para salvar o produto no banco de dados
     public function salvarProduto() {
-        // Pega o id do usuário da sessão
         $id_usuario_loja = $this->session->userdata('id_usuario');
         
-        // Verifica se o usuário existe na tabela usuarios
         if (!$this->Usuarios_model->usuarioExiste($id_usuario_loja)) {
-            // Se o usuário não existir, redireciona ou exibe uma mensagem de erro
             $this->session->set_flashdata('error', 'Usuário não encontrado!');
             redirect('loja');
             return;
         }
 
-        // Pega os dados do formulário
         $dadosProduto = [
             'nome' => $this->input->post('nome'),
             'preco' => $this->input->post('preco'),
             'descricao' => $this->input->post('descricao'),
             'categoria' => $this->input->post('categoria'),
-            'id_usuario_loja' => $id_usuario_loja, // Supondo que o ID do usuário da loja esteja na sessão
-            'quantidade' => $this->input->post('quantidade') // Adicionando a quantidade
+            'id_usuario_loja' => $id_usuario_loja,
+            'quantidade' => $this->input->post('quantidade')
         ];
 
-        // Chama o modelo para salvar os dados
-        $this->Produtos_Price_model->store($dadosProduto);
-
-        // Redireciona para a página principal da loja ou outra página de confirmação
+        $this->Produtos_Price_model->store($dadosProduto); // Alterado para store
         $this->session->set_flashdata('success', 'Produto cadastrado com sucesso!');
         redirect('loja');
     }
 
-    // Função para listar as vendas recentes com base nas datas fornecidas
     public function vendas()
     {
-        $id_usuario_loja = $this->session->userdata('id_usuario'); // Pegando o id do usuário da loja da sessão
-        $data_inicio = $this->input->post('data_inicio'); // Pega as datas do formulário
-        $data_fim = $this->input->post('data_fim');
+        $id_usuario_loja = $this->session->userdata('id_usuario');
+        $data_inicio = $this->input->post('data_inicio') ? $this->input->post('data_inicio') : date('Y-m-d');
+        $data_fim = $this->input->post('data_fim') ? $this->input->post('data_fim') : date('Y-m-d');
 
-        // Filtra as vendas com as datas fornecidas
         $vendas = $this->Vendas_model->listarVendas($id_usuario_loja, $data_inicio, $data_fim); 
         $dados = [
             'title' => 'Vendas Recentes',
-            'vendas' => $vendas // Passa as vendas para a view
+            'vendas' => $vendas
         ];
-        $this->template->load('lojaPaginaPrincipal', $dados); // Chama a view lojaPaginaPrincipal com as vendas
+        $this->template->load('lojaPaginaPrincipal', $dados);
     }
 
-    // Função para exibir os produtos da loja
     public function produtos() {
         $id_usuario_loja = $this->session->userdata('id_usuario');
         
+        if (!$this->Usuarios_model->usuarioExiste($id_usuario_loja)) {
+            $this->session->set_flashdata('error', 'Usuário não encontrado!');
+            redirect('loja');
+            return;
+        }
+
         $produtos = $this->Produtos_Price_model->getProdutosPorUsuario($id_usuario_loja);
         $data['produtos'] = $produtos;
-
-        $this->load->view('loja/produtos', $data);
+        $this->load->view('lojaPaginaPrincipal', $data);
     }
 
-    // Função para salvar um novo produto
     public function salvarNovoProduto() {
         $id_usuario_loja = $this->session->userdata('id_usuario');
         
-        $produto = array(
+        $produto = [
             'nome' => $this->input->post('nome'),
             'preco' => $this->input->post('preco'),
             'descricao' => $this->input->post('descricao'),
             'categoria' => $this->input->post('categoria'),
             'quantidade' => $this->input->post('quantidade'),
             'id_usuario_loja' => $id_usuario_loja
-        );
+        ];
 
         $this->Produtos_Price_model->salvarProduto($produto);
         redirect('loja/produtos');
     }
 
-    // Função para deletar o produto
     public function deletarProduto($id_produto) {
-        $this->Produtos_Price_model->deletarProduto($id_produto); // Passando o id_produto corretamente
-        redirect('loja/produtos');
+        // Deleta o produto diretamente
+        $this->Produtos_Price_model->deletarProduto($id_produto);
+
+        // Exibe uma mensagem de sucesso e recarrega a página de produtos
+        $this->session->set_flashdata('success', 'Produto excluído com sucesso!');
+        redirect('loja');
     }
 
-    // Exemplo para pegar um produto
     public function produto($id_produto) {
-        $produto = $this->Produtos_Price_model->get_produto_by_id($id_produto); // Ajuste aqui também
-        // Passando o produto para a view
+        $produto = $this->Produtos_Price_model->get_produtos_by_id($id_produto);
         $this->load->view('produtoDetalhes', ['produto' => $produto]);
     }
-
 }
