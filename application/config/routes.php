@@ -61,4 +61,10 @@ $route['loja/vendas'] = 'loja/vendas';  // Visualizar vendas
 $route['cadastrarProduto'] = 'loja/cadastrarProduto'; // Página do formulário
 $route['salvarProduto'] = 'loja/salvarProduto'; // Ação de salvar
 
+$route['cliente/carrinho'] = 'cliente/carrinho';  // Exibe o carrinho
+$route['cliente/adicionarAoCarrinho/(:num)'] = 'cliente/adicionarAoCarrinho/$1';  // Adiciona ao carrinho
+$route['cliente/editarCarrinho'] = 'cliente/editarCarrinho';  // Edita o carrinho
+$route['cliente/removerDoCarrinho/(:num)'] = 'cliente/removerDoCarrinho/$1';  // Remove do carrinho
+$route['cliente/confirmarCompra'] = 'cliente/confirmarCompra';  // Confirma a compra
+
 
