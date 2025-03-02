@@ -67,4 +67,6 @@ $route['cliente/editarCarrinho'] = 'cliente/editarCarrinho';  // Edita o carrinh
 $route['cliente/removerDoCarrinho/(:num)'] = 'cliente/removerDoCarrinho/$1';  // Remove do carrinho
 $route['cliente/confirmarCompra'] = 'cliente/confirmarCompra';  // Confirma a compra
 
+$route['cliente'] = 'cliente/clientePaginaPrincipal'; // Acessa a página principal do cliente sem ID
+$route['cliente/(:num)'] = 'cliente/pagina_principal/$1'; // Passa o ID do cliente para o método
 

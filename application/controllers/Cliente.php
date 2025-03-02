@@ -9,14 +9,43 @@ class Cliente extends CI_Controller {
         $this->load->library('template');
         $this->load->model('Produtos_Price_model');
         $this->load->model('Vendas_model');
+        $this->load->model('Cliente_model');  // Adiciona o Cliente_model
     }
 
-    public function index()
+    // Página principal do cliente
+    public function clientePaginaPrincipal()
     {
-        // Exibe a página principal do cliente
-        $dados = [
-            'title' => 'Página Cliente'
-        ];
+        $this->load->library('session');
+
+        // Obtém os produtos do banco de dados
+        $dados['produtos'] = $this->Produtos_Price_model->get_produtos();
+
+        // Exibe os produtos para depuração (remova isso em produção)
+        echo "<pre>";
+        print_r($dados['produtos']);  // Exibe os produtos retornados
+        echo "</pre>";
+        exit; // Para garantir que a execução pare aqui
+
+        // Define o título da página
+        $dados['title'] = 'Página Principal do Cliente';
+
+        // Carrega a view e envia os produtos
+        $this->template->load('clientePaginaPrincipal', $dados);
+    }
+
+    // Página principal do cliente com os dados do cliente
+    public function pagina_principal($id_cliente = null)
+    {
+        // Carregar os dados do cliente
+        $dados['cliente'] = $this->Cliente_model->get_cliente($id_cliente);
+
+        // Carregar todos os produtos disponíveis
+        $dados['produtos'] = $this->Produtos_Price_model->get_produtos();
+        
+        // Define o título da página
+        $dados['title'] = 'Página Principal do Cliente';
+
+        // Carrega a view e passa os dados do cliente e os produtos
         $this->template->load('clientePaginaPrincipal', $dados);
     }
 
@@ -91,28 +120,49 @@ class Cliente extends CI_Controller {
     // Confirmar compra
     public function confirmarCompra()
     {
+        // Chama a função para confirmar a compra
         $this->Loja->confirmarCompra();
     }
 
-    // Página principal do cliente - agora exibindo os produtos disponíveis
-	public function clientePaginaPrincipal()
-	{
-		$this->load->library('session');
+    // Adicionar cliente
+    public function adicionar()
+    {
+        $dados = array(
+            'nome' => $this->input->post('nome'),
+            'email' => $this->input->post('email')
+        );
 
-		// Obtém os produtos do banco de dados
-		$dados['produtos'] = $this->Produtos_Price_model->get_produtos();
+        if ($this->Cliente_model->insert_cliente($dados)) {
+            redirect('cliente/lista');
+        } else {
+            echo "Erro ao adicionar o cliente.";
+        }
+    }
 
-		// Adiciona uma depuração para verificar se os produtos estão sendo recuperados corretamente
-		echo "<pre>";
-		print_r($dados['produtos']);  // Exibe os produtos retornados
-		echo "</pre>";
-		exit; // Para garantir que a execução pare aqui e possamos ver os resultados
+    // Editar cliente
+    public function editar($id_cliente)
+    {
+        // Pegando os dados do formulário de edição
+        $dados = array(
+            'nome' => $this->input->post('nome'),
+            'email' => $this->input->post('email')
+        );
 
-		// Define o título da página
-		$dados['title'] = 'Página Principal do Cliente';
+        // Atualizando os dados no banco de dados
+        if ($this->Cliente_model->update_cliente($id_cliente, $dados)) {
+            redirect('cliente/pagina_principal/' . $id_cliente);
+        } else {
+            echo "Erro ao atualizar os dados.";
+        }
+    }
 
-		// Carrega a view e envia os produtos
-		$this->template->load('clientePaginaPrincipal', $dados);
-	}
-
+    // Excluir cliente
+    public function excluir($id_cliente)
+    {
+        if ($this->Cliente_model->delete_cliente($id_cliente)) {
+            redirect('cliente/lista');
+        } else {
+            echo "Erro ao excluir o cliente.";
+        }
+    }
 }
