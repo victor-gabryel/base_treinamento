@@ -9,47 +9,29 @@ class Cliente extends CI_Controller {
         $this->load->library('template');
         $this->load->model('Produtos_Price_model');
         $this->load->model('Vendas_model');
-        $this->load->model('Cliente_model');  // Adiciona o Cliente_model
+        $this->load->model('Cliente_model');
     }
 
-    // Página principal do cliente
     public function clientePaginaPrincipal()
     {
         $this->load->library('session');
-
-        // Obtém os produtos do banco de dados
         $dados['produtos'] = $this->Produtos_Price_model->get_produtos();
-
-        // Exibe os produtos para depuração (remova isso em produção)
         echo "<pre>";
-        print_r($dados['produtos']);  // Exibe os produtos retornados
+        print_r($dados['produtos']);
         echo "</pre>";
-        exit; // Para garantir que a execução pare aqui
-
-        // Define o título da página
+        exit;
         $dados['title'] = 'Página Principal do Cliente';
-
-        // Carrega a view e envia os produtos
         $this->template->load('clientePaginaPrincipal', $dados);
     }
 
-    // Página principal do cliente com os dados do cliente
     public function pagina_principal($id_cliente = null)
     {
-        // Carregar os dados do cliente
         $dados['cliente'] = $this->Cliente_model->get_cliente($id_cliente);
-
-        // Carregar todos os produtos disponíveis
         $dados['produtos'] = $this->Produtos_Price_model->get_produtos();
-        
-        // Define o título da página
         $dados['title'] = 'Página Principal do Cliente';
-
-        // Carrega a view e passa os dados do cliente e os produtos
         $this->template->load('clientePaginaPrincipal', $dados);
     }
 
-    // Exibe o carrinho de compras
     public function carrinho()
     {
         $carrinho = $this->session->userdata('carrinho');
@@ -60,7 +42,6 @@ class Cliente extends CI_Controller {
         $this->template->load('clienteCarrinho', $dados);
     }
 
-    // Adiciona um produto ao carrinho
     public function adicionarAoCarrinho($id_produto)
     {
         $produto = $this->Produtos_Price_model->get_produtos_by_id($id_produto);
@@ -70,7 +51,6 @@ class Cliente extends CI_Controller {
             $quantidade = $this->input->post('quantidade') ?? 1;
 
             if ($quantidade <= $produto->estoque) {
-                // Adiciona ao carrinho
                 $carrinho[] = [
                     'id_produto' => $produto->id_produto,
                     'nome' => $produto->nome,
@@ -86,7 +66,6 @@ class Cliente extends CI_Controller {
         redirect('cliente');
     }
 
-    // Editar a quantidade de produtos no carrinho
     public function editarCarrinho()
     {
         $id_produto = $this->input->post('id_produto');
@@ -104,7 +83,6 @@ class Cliente extends CI_Controller {
         redirect('cliente/carrinho');
     }
 
-    // Remover produto do carrinho
     public function removerDoCarrinho($id_produto)
     {
         $carrinho = $this->session->userdata('carrinho');
@@ -117,14 +95,11 @@ class Cliente extends CI_Controller {
         redirect('cliente/carrinho');
     }
 
-    // Confirmar compra
     public function confirmarCompra()
     {
-        // Chama a função para confirmar a compra
         $this->Loja->confirmarCompra();
     }
 
-    // Adicionar cliente
     public function adicionar()
     {
         $dados = array(
@@ -139,16 +114,13 @@ class Cliente extends CI_Controller {
         }
     }
 
-    // Editar cliente
     public function editar($id_cliente)
     {
-        // Pegando os dados do formulário de edição
         $dados = array(
             'nome' => $this->input->post('nome'),
             'email' => $this->input->post('email')
         );
 
-        // Atualizando os dados no banco de dados
         if ($this->Cliente_model->update_cliente($id_cliente, $dados)) {
             redirect('cliente/pagina_principal/' . $id_cliente);
         } else {
@@ -156,7 +128,6 @@ class Cliente extends CI_Controller {
         }
     }
 
-    // Excluir cliente
     public function excluir($id_cliente)
     {
         if ($this->Cliente_model->delete_cliente($id_cliente)) {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 01-Fev-2024 às 15:10
+-- Tempo de geração: 03-Mar-2025 às 00:20
 -- Versão do servidor: 10.4.17-MariaDB
 -- versão do PHP: 7.2.34
 
@@ -48,18 +48,6 @@ CREATE TABLE `carrinho_item` (
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `categoria`
---
-
-CREATE TABLE `categoria` (
-  `id_categoria` int(11) NOT NULL,
-  `nome` varchar(255) NOT NULL,
-  `descricao` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Estrutura da tabela `cupom`
 --
 
@@ -81,23 +69,14 @@ CREATE TABLE `cupom` (
 
 CREATE TABLE `produto` (
   `id_produto` int(11) NOT NULL,
+  `id_usuario_loja` int(11) NOT NULL,
   `nome` varchar(255) NOT NULL,
   `custo` double NOT NULL,
   `preco` double NOT NULL,
   `estoque` int(11) DEFAULT NULL,
-  `descricao` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `produto_categoria`
---
-
-CREATE TABLE `produto_categoria` (
-  `id_produto_categoria` int(11) NOT NULL,
-  `id_produto` int(11) DEFAULT NULL,
-  `id_categoria` int(11) DEFAULT NULL
+  `descricao` varchar(255) DEFAULT NULL,
+  `categoria` varchar(255) DEFAULT NULL,
+  `quantidade` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -120,6 +99,27 @@ CREATE TABLE `usuario` (
 -- --------------------------------------------------------
 
 --
+-- Estrutura da tabela `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `senha` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`) VALUES
+(7, 'Nome do Usuário', 'email@dominio.com', 'senha'),
+(8, 'Nome do Usuário', 'email@example.com', '');
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura da tabela `venda`
 --
 
@@ -128,6 +128,21 @@ CREATE TABLE `venda` (
   `id_carrinho` int(11) NOT NULL,
   `id_cupom` int(11) DEFAULT NULL,
   `data_venda` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `vendas`
+--
+
+CREATE TABLE `vendas` (
+  `id` int(11) NOT NULL,
+  `id_usuario_loja` int(11) NOT NULL,
+  `id_produto` int(11) NOT NULL,
+  `quantidade` int(11) NOT NULL,
+  `valor_total` decimal(10,2) NOT NULL,
+  `data_venda` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -150,13 +165,6 @@ ALTER TABLE `carrinho_item`
   ADD KEY `id_produto` (`id_produto`);
 
 --
--- Índices para tabela `categoria`
---
-ALTER TABLE `categoria`
-  ADD PRIMARY KEY (`id_categoria`),
-  ADD KEY `idx_categoria_nome` (`nome`);
-
---
 -- Índices para tabela `cupom`
 --
 ALTER TABLE `cupom`
@@ -170,15 +178,8 @@ ALTER TABLE `produto`
   ADD PRIMARY KEY (`id_produto`),
   ADD KEY `idx_produto_nome` (`nome`),
   ADD KEY `idx_produto_nome_preco` (`nome`,`preco`),
-  ADD KEY `idx_produto_nome_preco_estoque` (`nome`,`preco`,`estoque`);
-
---
--- Índices para tabela `produto_categoria`
---
-ALTER TABLE `produto_categoria`
-  ADD PRIMARY KEY (`id_produto_categoria`),
-  ADD KEY `id_produto` (`id_produto`),
-  ADD KEY `id_categoria` (`id_categoria`);
+  ADD KEY `idx_produto_nome_preco_estoque` (`nome`,`preco`,`estoque`),
+  ADD KEY `idx_produto_nome_loja` (`nome`,`id_usuario_loja`);
 
 --
 -- Índices para tabela `usuario`
@@ -189,94 +190,22 @@ ALTER TABLE `usuario`
   ADD KEY `idx_usuario_email` (`email`);
 
 --
--- Índices para tabela `venda`
+-- Índices para tabela `usuarios`
 --
-ALTER TABLE `venda`
-  ADD PRIMARY KEY (`id_venda`);
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT de tabelas despejadas
 --
 
 --
--- AUTO_INCREMENT de tabela `carrinho`
---
-ALTER TABLE `carrinho`
-  MODIFY `id_carrinho` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `carrinho_item`
---
-ALTER TABLE `carrinho_item`
-  MODIFY `id_carrinho_item` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `categoria`
---
-ALTER TABLE `categoria`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `cupom`
---
-ALTER TABLE `cupom`
-  MODIFY `id_cupom` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de tabela `produto`
 --
 ALTER TABLE `produto`
-  MODIFY `id_produto` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `produto_categoria`
---
-ALTER TABLE `produto_categoria`
-  MODIFY `id_produto_categoria` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `usuario`
---
-ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT de tabela `venda`
---
-ALTER TABLE `venda`
-  MODIFY `id_venda` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- Restrições para despejos de tabelas
---
-
---
--- Limitadores para a tabela `carrinho`
---
-ALTER TABLE `carrinho`
-  ADD CONSTRAINT `carrinho_ibfk_1` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`);
-
---
--- Limitadores para a tabela `carrinho_item`
---
-ALTER TABLE `carrinho_item`
-  ADD CONSTRAINT `carrinho_item_ibfk_1` FOREIGN KEY (`id_carrinho`) REFERENCES `carrinho` (`id_carrinho`),
-  ADD CONSTRAINT `carrinho_item_ibfk_2` FOREIGN KEY (`id_produto`) REFERENCES `produto` (`id_produto`);
-
---
--- Limitadores para a tabela `produto_categoria`
---
-ALTER TABLE `produto_categoria`
-  ADD CONSTRAINT `produto_categoria_ibfk_1` FOREIGN KEY (`id_produto`) REFERENCES `produto` (`id_produto`),
-  ADD CONSTRAINT `produto_categoria_ibfk_2` FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id_categoria`);
+  MODIFY `id_produto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 COMMIT;
-
-ALTER TABLE produto ADD id_usuario_loja INT NOT NULL AFTER id_produto;
-
-ALTER TABLE `treinamento`.`produto` ADD INDEX `idx_produto_nome_loja` (`nome`, `id_usuario_loja`);
-ALTER TABLE `treinamento`.`produto` ADD INDEX `idx_produto_nome_loja` (`id_usuario_loja`, `nome`);
-ALTER TABLE `treinamento`.`produto` ADD INDEX `idx_produto_nome_preco_loja` (`id_usuario_loja`, `preco`, `nome`);
-ALTER TABLE `treinamento`.`produto` ADD INDEX `idx_produto_nome_preco_estoque_loja` (`id_usuario_loja`, `nome`, `preco`, `estoque`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

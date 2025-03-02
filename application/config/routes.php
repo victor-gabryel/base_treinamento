@@ -53,20 +53,17 @@ $route['default_controller'] = 'login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['loja'] = 'loja/index';  // Página principal da loja
-$route['loja/cadastrarProduto'] = 'loja/cadastrarProduto';  // Cadastrar produto
-$route['loja/editarProduto/(:num)'] = 'loja/editarProduto/$1';  // Editar produto
-$route['loja/deletarProduto/(:num)'] = 'loja/deletarProduto/$1';  // Deletar produto
-$route['loja/vendas'] = 'loja/vendas';  // Visualizar vendas
-$route['cadastrarProduto'] = 'loja/cadastrarProduto'; // Página do formulário
-$route['salvarProduto'] = 'loja/salvarProduto'; // Ação de salvar
-
-$route['cliente/carrinho'] = 'cliente/carrinho';  // Exibe o carrinho
-$route['cliente/adicionarAoCarrinho/(:num)'] = 'cliente/adicionarAoCarrinho/$1';  // Adiciona ao carrinho
-$route['cliente/editarCarrinho'] = 'cliente/editarCarrinho';  // Edita o carrinho
-$route['cliente/removerDoCarrinho/(:num)'] = 'cliente/removerDoCarrinho/$1';  // Remove do carrinho
-$route['cliente/confirmarCompra'] = 'cliente/confirmarCompra';  // Confirma a compra
-
-$route['cliente'] = 'cliente/clientePaginaPrincipal'; // Acessa a página principal do cliente sem ID
-$route['cliente/(:num)'] = 'cliente/pagina_principal/$1'; // Passa o ID do cliente para o método
-
+$route['loja'] = 'loja/index';
+$route['loja/cadastrarProduto'] = 'loja/cadastrarProduto';
+$route['loja/editarProduto/(:num)'] = 'loja/editarProduto/$1';
+$route['loja/deletarProduto/(:num)'] = 'loja/deletarProduto/$1';
+$route['loja/vendas'] = 'loja/vendas';
+$route['cadastrarProduto'] = 'loja/cadastrarProduto';
+$route['salvarProduto'] = 'loja/salvarProduto';
+$route['cliente/carrinho'] = 'cliente/carrinho';
+$route['cliente/adicionarAoCarrinho/(:num)'] = 'cliente/adicionarAoCarrinho/$1';
+$route['cliente/editarCarrinho'] = 'cliente/editarCarrinho';
+$route['cliente/removerDoCarrinho/(:num)'] = 'cliente/removerDoCarrinho/$1';
+$route['cliente/confirmarCompra'] = 'cliente/confirmarCompra';
+$route['cliente'] = 'cliente/clientePaginaPrincipal';
+$route['cliente/(:num)'] = 'cliente/pagina_principal/$1';

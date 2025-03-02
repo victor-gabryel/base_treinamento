@@ -46,7 +46,6 @@
             exibirAviso('Email invalido', 'alerta');
             return false;
         }
-        //pega o valor do input senha caso seja NULL ou '' irá pegar o valor do outro lado do ??
         let senha = $("#senha").val() ?? false; 
         if(!senha){
             exibirAviso('Senha vazia', 'alerta');
@@ -63,10 +62,10 @@
         let email = $("#email").val();
         let senha = $("#senha").val(); 
         $.ajax({
-            url: "<?=base_url('login/autenticar')?>", // URL que será chamada a requesição
-            type: "POST", // Tipo de requisição (GET, POST, etc.)
-            dataType: "json", // Tipo de dados esperado na resposta
-            data: { //dados que serão enviados pela requesição
+            url: "<?=base_url('login/autenticar')?>",
+            type: "POST",
+            dataType: "json",
+            data: {
                 email: email,
                 senha: senha
             },

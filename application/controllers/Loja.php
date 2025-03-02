@@ -11,7 +11,6 @@ class Loja extends CI_Controller {
         $this->load->model('Vendas_model'); 
         $this->load->model('Usuarios_model'); 
 
-        // Verifica se o usuário está logado
         if (!$this->session->userdata('id_usuario')) {
             redirect('login');
         }
@@ -48,7 +47,7 @@ class Loja extends CI_Controller {
             'quantidade' => $this->input->post('quantidade')
         ];
 
-        $this->Produtos_Price_model->store($dadosProduto); // Alterado para store
+        $this->Produtos_Price_model->store($dadosProduto);
         $this->session->set_flashdata('success', 'Produto cadastrado com sucesso!');
         redirect('loja');
     }
@@ -98,10 +97,7 @@ class Loja extends CI_Controller {
     }
 
     public function deletarProduto($id_produto) {
-        // Deleta o produto diretamente
         $this->Produtos_Price_model->deletarProduto($id_produto);
-
-        // Exibe uma mensagem de sucesso e recarrega a página de produtos
         $this->session->set_flashdata('success', 'Produto excluído com sucesso!');
         redirect('loja');
     }

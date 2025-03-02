@@ -7,14 +7,12 @@
     <title><?php echo $title; ?></title>
 </head>
 <style>
-    /* Resetando margens e preenchimento */
     * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
 
-    /* Estilo geral do corpo da página */
     body {
         font-family: 'Arial', sans-serif;
         background-color: #f9f9f9;
@@ -27,7 +25,6 @@
         padding: 20px;
     }
 
-    /* Título principal */
     h1 {
         color: #4CAF50;
         margin-bottom: 20px;
@@ -35,16 +32,13 @@
         text-align: center;
     }
 
-    /* Subtítulos */
     h2 {
         color: #555;
         margin-top: 20px;
         font-size: 1.8em;
-        text-align: center; /* Adicionada a centralização */
+        text-align: center;
     }
 
-
-    /* Estilo do formulário */
     form {
         background-color: #fff;
         padding: 20px;
@@ -57,7 +51,6 @@
         flex-direction: column;
     }
 
-    /* Estilo dos campos de entrada e textarea */
     input, textarea {
         width: 100%;
         padding: 12px;
@@ -68,19 +61,16 @@
         transition: border-color 0.3s;
     }
 
-    /* Estilo do campo textarea */
     textarea {
         height: 100px;
         resize: vertical;
     }
 
-    /* Foco nos campos de entrada */
     input:focus, textarea:focus {
         border-color: #4CAF50;
         outline: none;
     }
 
-    /* Estilo dos botões */
     button {
         padding: 12px;
         background-color: #4CAF50;
@@ -93,12 +83,10 @@
         margin-top: 15px;
     }
 
-    /* Efeito de hover nos botões */
     button:hover {
         background-color: #45a049;
     }
 
-    /* Lista de produtos e vendas */
     ul {
         list-style-type: none;
         margin-top: 15px;
@@ -113,13 +101,11 @@
         font-size: 16px;
     }
 
-    /* Estilo das mensagens (produtos e vendas) */
     p {
         color: #777;
         font-size: 16px;
     }
 
-    /* Estilo dos links */
     a {
         text-decoration: none;
         color: #4CAF50;
@@ -129,7 +115,6 @@
     a:hover {
         color: #388E3C;
     }
-
 </style>
 <body>
     <h1>Bem-vindo à sua loja!</h1>
